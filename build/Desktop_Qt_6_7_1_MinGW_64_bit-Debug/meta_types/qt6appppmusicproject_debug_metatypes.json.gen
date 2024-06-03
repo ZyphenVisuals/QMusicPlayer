@@ -1,0 +1,32 @@
+[
+    {
+        "classes": [
+            {
+                "className": "FileManager",
+                "object": true,
+                "qualifiedClassName": "FileManager",
+                "slots": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "folderUrlString",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "listFolderContents",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "filemanager.h",
+        "outputRevision": 68
+    }
+]

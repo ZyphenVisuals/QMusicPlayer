@@ -1,0 +1,5 @@
+module PPMusicProject
+typeinfo appPPMusicProject.qmltypes
+prefer :/PPMusicProject/
+Main 1.0 Main.qml
+
