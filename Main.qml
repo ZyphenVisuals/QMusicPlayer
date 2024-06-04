@@ -34,6 +34,6 @@ ApplicationWindow {
     FolderDialog {
             id: folderDialog
             currentFolder: StandardPaths.standardLocations(StandardPaths.MusicLocation)[0]
-            onAccepted: FileManager.listFolderContents(selectedFolder)
+            onAccepted: FileManager.scanFolderContents(selectedFolder)
     }
 }

@@ -10,7 +10,7 @@ public:
     explicit FileManager(QObject *parent = nullptr);
 
 public slots:
-    void listFolderContents(QString folderUrlString);
+    void scanFolderContents(QString folderUrlString);
 
 signals:
 };
