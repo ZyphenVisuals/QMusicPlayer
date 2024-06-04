@@ -8,14 +8,12 @@ FileManager::FileManager(QObject *parent)
     : QObject{parent}
 {}
 
-void FileManager::scanFolderContents(QString folderUrlString)
+void FileManager::scanFolderContents(QUrl folderUrl)
 {
-    // parse URL
-    QUrl folderUrl(folderUrlString);
-    qDebug() << "Scanning folder: " << folderUrl.path();
+    qDebug() << "Scanning folder: " << folderUrl.toLocalFile();
 
     // open directory and filter for audio files
-    QDir dir(folderUrl.path());
+    QDir dir(folderUrl.toLocalFile());
     dir.setNameFilters( QStringList() << "*.mp3" << "*.wav" << "*.ogg" << "*.flac");
 
     for (const QFileInfo &file : dir.entryInfoList(QDir::Files))

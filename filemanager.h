@@ -2,6 +2,7 @@
 #define FILEMANAGER_H
 
 #include <QObject>
+#include <QUrl>
 
 class FileManager : public QObject
 {
@@ -10,7 +11,7 @@ public:
     explicit FileManager(QObject *parent = nullptr);
 
 public slots:
-    void scanFolderContents(QString folderUrlString);
+    void scanFolderContents(QUrl folderUrlString);
 
 signals:
 };

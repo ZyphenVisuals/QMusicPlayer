@@ -11,10 +11,10 @@
                         "arguments": [
                             {
                                 "name": "folderUrlString",
-                                "type": "QString"
+                                "type": "QUrl"
                             }
                         ],
-                        "name": "listFolderContents",
+                        "name": "scanFolderContents",
                         "returnType": "void"
                     }
                 ],
