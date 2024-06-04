@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     FileManager *fileManager = new FileManager(&app);
-    qmlRegisterSingletonInstance("com.trinitystudios.FileManager", 1, 0, "FileManager", fileManager);
+    qmlRegisterSingletonInstance("com.teamcex.FileManager", 1, 0, "FileManager", fileManager);
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/PPMusicProject/Main.qml"));

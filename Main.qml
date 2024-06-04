@@ -1,9 +1,11 @@
+import QtCore
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Universal
 import QtQuick.Dialogs
 
-import com.trinitystudios.FileManager
+import com.teamcex.FileManager
 
 ApplicationWindow {
     width: 1280
@@ -17,7 +19,9 @@ ApplicationWindow {
             title: qsTr("File")
             Action {
                 text: qsTr("Open folder")
-                onTriggered: folderDialog.open()
+                onTriggered: {
+                    folderDialog.open()
+                }
             }
         }
     }
@@ -29,6 +33,7 @@ ApplicationWindow {
 
     FolderDialog {
             id: folderDialog
+            currentFolder: StandardPaths.standardLocations(StandardPaths.MusicLocation)[0]
             onAccepted: FileManager.listFolderContents(selectedFolder)
     }
 }
