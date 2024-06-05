@@ -5,23 +5,42 @@ import QtQuick.Controls
 import QtQuick.Controls.Universal
 import QtQuick.Dialogs
 
-import com.teamcex.FileManager
-
 ApplicationWindow {
     width: 1280
     height: 720
+    minimumHeight: 720
+    minimumWidth: 1280
     visible: true
-    title: qsTr("Hello World")
+    title: qsTr("QMusicPlayer")
     Universal.theme: Universal.Dark
+    id: root
 
     menuBar: MenuBar {
         Menu {
             title: qsTr("File")
             Action {
-                text: qsTr("Open folder")
+                text: qsTr("Open song")
+            }
+            Action {
+                text: qsTr("Exit")
                 onTriggered: {
-                    folderDialog.open()
+                    Qt.quit()
                 }
+            }
+        }
+
+        Menu {
+            title: qsTr("Options")
+            Action {
+                text: qsTr("Import folders")
+                onTriggered: {
+                    var component = Qt.createComponent("settings.qml")
+                    var window    = component.createObject(root)
+                    window.show()
+                }
+            }
+            Action {
+                text: qsTr("Audio settings")
             }
         }
     }
@@ -29,11 +48,5 @@ ApplicationWindow {
     Text {
         text: "Hello world!"
         color: "#ffffff"
-    }
-
-    FolderDialog {
-            id: folderDialog
-            currentFolder: StandardPaths.standardLocations(StandardPaths.MusicLocation)[0]
-            onAccepted: FileManager.scanFolderContents(selectedFolder)
     }
 }

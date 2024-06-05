@@ -18,6 +18,11 @@ qt_add_qml_module(appPPMusicProject
     QML_FILES
         Main.qml
         SOURCES filemanager.h filemanager.cpp
+        SOURCES playlist.h playlist.cpp
+        SOURCES song.h song.cpp
+        RESOURCES static.qrc
+        QML_FILES settings.qml
+        SOURCES folderlistmodel.h folderlistmodel.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -42,4 +47,5 @@ install(TARGETS appPPMusicProject
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-
+find_package(Qt6 COMPONENTS Multimedia REQUIRED)
+target_link_libraries(appPPMusicProject PUBLIC Qt::Multimedia)
