@@ -15,6 +15,7 @@ class Song : public QObject
     Q_PROPERTY(qint64 duration READ duration WRITE setDuration NOTIFY durationChanged FINAL)
     Q_PROPERTY(QImage cover READ cover WRITE setCover NOTIFY coverChanged FINAL)
     Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged FINAL)
+    Q_PROPERTY(QUrl coverUrl READ coverUrl WRITE setCoverUrl NOTIFY coverUrlChanged FINAL)
 public:
     explicit Song(QUrl file, QObject *parent = nullptr);
 
@@ -36,6 +37,10 @@ public:
     QUrl source() const;
     void setSource(const QUrl &newSource);
 
+    QUrl coverUrl() const;
+
+    void setCoverUrl(const QUrl &newCoverUrl);
+
 signals:
     void titleChanged();
 
@@ -49,6 +54,10 @@ signals:
 
     void sourceChanged();
 
+    void dataLoaded(QUrl source);
+
+    void coverUrlChanged();
+
 private:
     QString m_title;
     QString m_artist;
@@ -56,10 +65,12 @@ private:
     qint64 m_duration;
     QImage m_cover;
     QUrl m_source;
+    QUrl m_coverUrl;
 
     QMediaPlayer *m_tempMediaPlayer;
 
     void loadData();
+    void loadCover();
 };
 
 #endif // SONG_H

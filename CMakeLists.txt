@@ -22,7 +22,10 @@ qt_add_qml_module(appPPMusicProject
         SOURCES song.h song.cpp
         RESOURCES static.qrc
         QML_FILES settings.qml
-        SOURCES folderlistmodel.h folderlistmodel.cpp
+        SOURCES
+        SOURCES player.h player.cpp
+        SOURCES
+        SOURCES songmodel.h songmodel.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

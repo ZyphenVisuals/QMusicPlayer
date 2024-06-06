@@ -13,10 +13,6 @@ FileManager::FileManager(QObject *parent)
 {
     this->settings = new QSettings("Team CEX", "QMusicPlayer", this);
     this->m_folders = settings->value("folders").value<QList<QUrl>>();
-    for (const QUrl &folder : m_folders) {
-        qDebug() << "[FileManager] Scanning folder:" << folder.toLocalFile();
-        scanFolderContents(folder);
-    }
 }
 
 void FileManager::addFolder(QUrl folder)
@@ -53,6 +49,7 @@ void FileManager::scanFolderContents(QUrl folderUrl)
     {
         qDebug() << "[FileManager] Found file:" << file.fileName();
         Song *song = new Song(QUrl::fromLocalFile(file.absoluteFilePath()), this);
+        emit this->newFile(song);
     }
 
     qDebug() << "[FileManager] Scanning finished.\n";
@@ -73,4 +70,17 @@ void FileManager::setFolders(const QList<QUrl> &newFolders)
     QVariant folders = QVariant::fromValue(m_folders);
     settings->setValue("folders", folders);
     emit foldersChanged();
+}
+
+void FileManager::scanFolders()
+{
+    for (const QUrl &folder : m_folders) {
+        scanFolderContents(folder);
+    }
+}
+
+void FileManager::openFile(QUrl songUrl)
+{
+    Song *song = new Song(songUrl, this);
+    emit this->playSong(song);
 }

@@ -6,7 +6,6 @@ import QtQuick.Controls.Universal
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
-import com.teamcex.FolderListModel
 import com.teamcex.FileManager
 
 ApplicationWindow {
@@ -88,6 +87,7 @@ ApplicationWindow {
 
     FolderDialog {
             id: folderDialog
+            title: "Select an import folder"
             currentFolder: StandardPaths.standardLocations(StandardPaths.MusicLocation)[0]
             onAccepted: {
                 FileManager.addFolder(selectedFolder)

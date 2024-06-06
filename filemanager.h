@@ -5,6 +5,8 @@
 #include <QSettings>
 #include <QUrl>
 
+#include "song.h"
+
 class FileManager : public QObject
 {
     Q_OBJECT
@@ -14,15 +16,19 @@ public:
 
     QList<QUrl> folders() const;
     void setFolders(const QList<QUrl> &newFolders);
+    void scanFolders();
 
 public slots:
+    void openFile(QUrl songUrl);
     void addFolder(QUrl folder);
     void removeFolder(QUrl folder);
 
 signals:
-    void onNewFile(QUrl file);
+    void newFile(Song *song);
 
     void foldersChanged();
+
+    void playSong(Song *song);
 
 private:
     void scanFolderContents(QUrl folderUrlString);

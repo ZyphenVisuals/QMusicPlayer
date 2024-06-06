@@ -1,7 +1,21 @@
 #include "song.h"
+#include <QBuffer>
 #include <QDebug>
+#include <QImage>
 #include <QMediaMetaData>
 #include <QUrl>
+#include <QtConcurrent/QtConcurrentRun>
+
+// https://forum.qt.io/post/702474
+QUrl imageToUrl(const QImage &image)
+{
+    QByteArray byteArray;
+    QBuffer buffer(&byteArray);
+    buffer.open(QIODevice::WriteOnly);
+    image.save(&buffer, "png");
+    QString base64 = QString::fromUtf8(byteArray.toBase64());
+    return QString("data:image/png;base64,") + base64;
+}
 
 Song::Song(QUrl file, QObject *parent)
     : QObject{parent}
@@ -14,14 +28,6 @@ Song::Song(QUrl file, QObject *parent)
     this->setArtist("Loading...");
     this->setTitle("Loading...");
     this->setDuration(0);
-
-    // load the default cover
-    QImage cover;
-    if (cover.load(":/images/default_cover.png")) {
-        this->setCover(cover);
-    } else {
-        qWarning() << "[Song] Could not load default cover image!";
-    }
 
     // start loading the song data
     this->loadData();
@@ -47,7 +53,7 @@ void Song::loadData()
                     this->setTitle(
                         m_tempMediaPlayer->metaData().value(QMediaMetaData::Title).toString());
                 } else {
-                    this->setTitle("Unknown title");
+                    this->setTitle(m_source.fileName());
                 }
 
                 // set the artist
@@ -88,8 +94,20 @@ void Song::loadData()
 
                 // debug print
                 qDebug() << "[Song] Loaded song:" << m_source.fileName() << m_title << m_artist;
+
+                // emit the dataLoaded signal
+                emit this->dataLoaded(m_source);
+
+                // load the cover
+                QFuture<void> future = QtConcurrent::run([=] { this->loadCover(); });
             }
         });
+}
+
+void Song::loadCover()
+{
+    this->setCoverUrl(imageToUrl(m_cover));
+    emit this->dataLoaded(m_source);
 }
 
 QString Song::title() const
@@ -168,4 +186,17 @@ void Song::setSource(const QUrl &newSource)
         return;
     m_source = newSource;
     emit sourceChanged();
+}
+
+QUrl Song::coverUrl() const
+{
+    return m_coverUrl;
+}
+
+void Song::setCoverUrl(const QUrl &newCoverUrl)
+{
+    if (m_coverUrl == newCoverUrl)
+        return;
+    m_coverUrl = newCoverUrl;
+    emit coverUrlChanged();
 }
