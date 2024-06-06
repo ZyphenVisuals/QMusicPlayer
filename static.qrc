@@ -1,1 +1,6 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/">
+        <file>static/no_album_art.jpg</file>
+        <file>static/QMP.png</file>
+    </qresource>
+</RCC>

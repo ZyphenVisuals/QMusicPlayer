@@ -7,6 +7,7 @@ Player::Player(QAudioOutput *output, QObject *parent)
 {
     this->player = new QMediaPlayer(this);
     this->player->setAudioOutput(output);
+    this->setPlaying(false);
 }
 
 void Player::open(Song *song)
@@ -15,6 +16,7 @@ void Player::open(Song *song)
     this->setPlaying(false);
     this->setCurrentSong(song);
     this->player->setSource(song->source());
+    this->play();
 }
 
 void Player::play()

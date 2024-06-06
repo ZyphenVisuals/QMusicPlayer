@@ -7,7 +7,6 @@
 #include <QObject>
 #include <QUrl>
 
-#include "playlist.h"
 #include "song.h"
 
 class Player : public QObject

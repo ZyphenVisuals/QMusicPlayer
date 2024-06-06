@@ -14,7 +14,7 @@ ApplicationWindow {
     height: 600
     minimumWidth: 800
     minimumHeight: 600
-    title: qsTr("Import folders - QMusicPlayer")
+    title: qsTr("Settings - QMusicPlayer")
     Universal.theme: Universal.Dark
     id: root
 
@@ -23,6 +23,24 @@ ApplicationWindow {
         height: parent.height * 0.8
         anchors.centerIn: parent
         id: settingsLayout
+
+        Text {
+            text: qsTr("Audio settings")
+            color: "white"
+            font.pixelSize: 32
+            font.bold: true
+        }
+
+        RowLayout{
+            Text {
+                text: qsTr("Output device")
+                color: "white"
+                font.pixelSize: 16
+            }
+            ComboBox{
+                model: ["Default", "Custom"]
+            }
+        }
 
         Text {
             text: qsTr("Folder paths")
@@ -71,8 +89,7 @@ ApplicationWindow {
           }
 
           Rectangle {
-            radius: 4
-            border.color:"white"
+            border.color:"#5c5c5c"
             border.width: 2
             color: 'transparent'
             anchors.fill: parent

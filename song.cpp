@@ -106,8 +106,13 @@ void Song::loadData()
 
 void Song::loadCover()
 {
-    this->setCoverUrl(imageToUrl(m_cover));
-    emit this->dataLoaded(m_source);
+    if (m_cover.isNull()) {
+        this->setCoverUrl("qrc:/static/no_album_art.jpg");
+        emit this->dataLoaded(m_source);
+    } else {
+        this->setCoverUrl(imageToUrl(m_cover).toString());
+        emit this->dataLoaded(m_source);
+    }
 }
 
 QString Song::title() const
@@ -188,12 +193,12 @@ void Song::setSource(const QUrl &newSource)
     emit sourceChanged();
 }
 
-QUrl Song::coverUrl() const
+QString Song::coverUrl() const
 {
     return m_coverUrl;
 }
 
-void Song::setCoverUrl(const QUrl &newCoverUrl)
+void Song::setCoverUrl(const QString &newCoverUrl)
 {
     if (m_coverUrl == newCoverUrl)
         return;

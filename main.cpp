@@ -1,6 +1,7 @@
 #include <QAudioOutput>
 #include <QDebug>
 #include <QGuiApplication>
+#include <QIcon>
 #include <QMetaType>
 #include <QQmlApplicationEngine>
 #include <QSettings>
@@ -21,6 +22,8 @@ int main(int argc, char *argv[])
     QSurfaceFormat::setDefaultFormat(format);
 
     QGuiApplication app(argc, argv);
+
+    app.setWindowIcon(QIcon(":/static/QMP.png"));
 
     QSettings settings("Team CEX", "QMusicPlayer");
     settings.setValue("version", "1.0");

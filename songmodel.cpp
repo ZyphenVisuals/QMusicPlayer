@@ -4,7 +4,13 @@
 SongModel::SongModel(QObject *parent)
     : QAbstractListModel(parent)
 {
-    m_playlist = nullptr;
+    this->m_playlist = nullptr;
+    this->m_orderBy = "";
+
+    QObject::connect(this, &SongModel::orderByChanged, this, [=]() {
+        this->beginResetModel();
+        this->endResetModel();
+    });
 }
 
 int SongModel::rowCount(const QModelIndex &parent) const
@@ -22,7 +28,25 @@ QVariant SongModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || !m_playlist)
         return QVariant();
 
-    const Song *song = m_playlist->songs().at(index.row());
+    Song *song = m_playlist->songs().at(index.row());
+
+    if (this->m_orderBy == "album") {
+        QVector<Song *> sortedSongs = m_playlist->songs();
+        std::stable_sort(sortedSongs.begin(), sortedSongs.end(), [](Song *a, Song *b) {
+            return a->album() < b->album();
+        });
+        song = sortedSongs.at(index.row());
+        sortedSongs.clear();
+    }
+
+    if (this->m_orderBy == "artist") {
+        QVector<Song *> sortedSongs = m_playlist->songs();
+        std::stable_sort(sortedSongs.begin(), sortedSongs.end(), [](Song *a, Song *b) {
+            return a->artist() < b->artist();
+        });
+        song = sortedSongs.at(index.row());
+        sortedSongs.clear();
+    }
 
     switch (role) {
     case TitleRole:
@@ -37,6 +61,8 @@ QVariant SongModel::data(const QModelIndex &index, int role) const
         return song->coverUrl();
     case SourceRole:
         return song->source();
+    case SongRole:
+        return QVariant::fromValue(song);
     }
 
     return QVariant();
@@ -51,6 +77,7 @@ QHash<int, QByteArray> SongModel::roleNames() const
     roles[DurationRole] = "duration";
     roles[CoverRole] = "cover";
     roles[SourceRole] = "source";
+    roles[SongRole] = "song";
     return roles;
 }
 
@@ -82,4 +109,17 @@ void SongModel::setPlaylist(Playlist *playlist)
     }
 
     this->endResetModel();
+}
+
+QString SongModel::orderBy() const
+{
+    return m_orderBy;
+}
+
+void SongModel::setOrderBy(const QString &newOrderBy)
+{
+    if (m_orderBy == newOrderBy)
+        return;
+    m_orderBy = newOrderBy;
+    emit orderByChanged();
 }

@@ -22,6 +22,8 @@ ApplicationWindow {
     Universal.theme: Universal.Dark
     id: root
 
+    property string filterType: ""
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("File")
@@ -59,19 +61,28 @@ ApplicationWindow {
             title: qsTr("View")
             Action {
                 text: qsTr("All songs")
+                onTriggered: {
+                    filterType = ""
+                }
             }
             Action {
                 text: qsTr("Albums")
+                onTriggered: {
+                    filterType = "album"
+                }
             }
             Action {
                 text: qsTr("Artists")
+                onTriggered: {
+                    filterType = "artist"
+                }
             }
         }
 
         Menu {
             title: qsTr("Options")
             Action {
-                text: qsTr("Import folders")
+                text: qsTr("Settings")
                 onTriggered: {
                     var component = Qt.createComponent("settings.qml")
                     var window    = component.createObject(root)
@@ -79,7 +90,12 @@ ApplicationWindow {
                 }
             }
             Action {
-                text: qsTr("Audio settings")
+                text: qsTr("About")
+                onTriggered: {
+                    var component = Qt.createComponent("about.qml")
+                    var window    = component.createObject(root)
+                    window.show()
+                }
             }
         }
     }
@@ -98,19 +114,57 @@ ApplicationWindow {
 
             ListView{
                 id: songlist
-                width: leftcolumn.width - 40
-                x: 20
+                width: leftcolumn.width - 30
+                x: 30
                 height: leftcolumn.height
                 clip: true
                 spacing: 30
-                snapMode: ListView.SnapToItem
+                currentIndex: -1
+
+                ScrollBar.vertical: ScrollBar {
+                    policy: ScrollBar.AlwaysOn
+                }
 
                 model: SongModel {
                     playlist: Playlist
+                    orderBy: filterType
                 }
 
+                section.property: filterType
+                section.criteria: ViewSection.FullString
+                section.delegate: Item {
+                    width: songlist.width - 30
+                    height: 100
+
+                    Text {
+                        text: section
+                        anchors.centerIn: parent
+                        color: "white"
+                        font.pointSize: 16
+                    }
+                }
+
+                /* - bugs out text, maybe later
+                highlight: Rectangle {
+                    color: "transparent"
+                    width: songlist.currentItem.width
+                    height: songlist.currentItem.height
+                    x: songlist.currentItem.x
+                    y: songlist.currentItem.y
+                    border.color: "red"
+                    border.width: 2
+                    radius: 10
+                    z: 2
+                }
+
+                highlightRangeMode: ListView.ApplyRange
+                highlightMoveDuration: 300
+                preferredHighlightBegin: songlist.top
+                preferredHighlightEnd: songlist.bottom
+                */
+
                 header: Item {
-                    width: songlist.width
+                    width: songlist.width - 30
                     height: 100
 
                     Text {
@@ -122,13 +176,28 @@ ApplicationWindow {
                 }
 
                 delegate:  Rectangle{
-                    width: songlist.width
+                    width: songlist.width - 30
                     height: 100
                     x: 20
                     color: "#1f1f1f"
                     border.color: "white"
-                    border.width: 1
+                    border.width: 2
                     radius: 10
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            if(Player.playing && Player.currentSong.source === model.song.source) {
+                                Player.pause()
+                            } else if (!Player.playing && Player.currentSong && Player.currentSong.source === model.song.source) {
+                                Player.play()
+                            } else {
+                                Player.open(model.song)
+                                songlist.currentIndex = index
+                            }
+                            console.log(model.cover)
+                        }
+                    }
 
                     RowLayout {
                         spacing: 0
@@ -147,6 +216,7 @@ ApplicationWindow {
                                 width: rect1.width * 0.8
                                 height: rect1.height * 0.8
                                 visible: false
+                                fillMode: Image.PreserveAspectCrop
                             }
 
                             MultiEffect {
@@ -223,7 +293,16 @@ ApplicationWindow {
                             Layout.preferredWidth: parent.height
                             Text{
                                 anchors.centerIn: parent
-                                text:  "0:00"
+                                text:  {
+                                    var duration = model.duration / 1000
+                                    var minutes = Math.floor(duration / 60)
+                                    var seconds = Math.floor(duration % 60)
+                                    if (seconds < 10) {
+                                        seconds = "0" + seconds
+                                    }
+                                    minutes + ":" + seconds
+                                }
+
                                 font.pointSize: 14
                                 color: "white"
                             }
@@ -252,6 +331,7 @@ ApplicationWindow {
             Layout.fillHeight: true
             Layout.preferredWidth: parent.width/5 * 2
             Layout.alignment: Qt.AlignTop
+
 
 
         }
