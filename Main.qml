@@ -230,7 +230,6 @@ ApplicationWindow {
                                 width: songCover.width
                                 height: songCover.height
                                 visible: false
-                                // @disable-check M16
                                 layer.enabled: true
 
                                 Rectangle {
@@ -459,8 +458,25 @@ ApplicationWindow {
                         id: volumeButton
                         anchors.fill: parent
                         radius: width/2
-                        icon.source: "qrc:/static/volume-high.svg"
+                        icon.source: {
+                            if (Player.audioOutput.muted){
+                                "qrc:/static/volume-mute.svg"
+                            } else if (Player.audioOutput.volume === 0) {
+                                "qrc:/static/volume-off.svg"
+                            } else if (Player.audioOutput.volume < 0.3) {
+                                "qrc:/static/volume-low.svg"
+                            } else if (Player.audioOutput.volume < 0.7) {
+                                "qrc:/static/volume-medium.svg"
+                            } else {
+                                "qrc:/static/volume-high.svg"
+                            }
+                        }
+
                         background: Item{}
+
+                        onClicked: {
+                            Player.audioOutput.muted = !Player.audioOutput.muted
+                        }
 
                     }
 
