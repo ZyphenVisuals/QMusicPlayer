@@ -1,13 +1,27 @@
 #include "player.h"
 
 #include <QAudioOutput>
+#include <QDebug>
+#include <QSettings>
 
-Player::Player(QAudioOutput *output, QObject *parent)
+Player::Player(QObject *parent)
     : QObject{parent}
 {
     this->player = new QMediaPlayer(this);
-    this->player->setAudioOutput(output);
     this->setPlaying(false);
+    this->audioOutput = new QAudioOutput(this);
+    this->settings = new QSettings("Team CEX", "QMusicPlayer", this);
+    this->player->setAudioOutput(this->audioOutput);
+    if (this->settings->contains("volume")) {
+        qDebug() << "[Player] Loading volume:" << this->settings->value("volume").toFloat();
+        this->audioOutput->setVolume(this->settings->value("volume").toFloat());
+    } else {
+        this->audioOutput->setVolume(0.5);
+    }
+
+    connect(this->player, &QMediaPlayer::positionChanged, this, [=](qint64 position) {
+        this->setTimecode(position);
+    });
 }
 
 void Player::open(Song *song)
@@ -17,6 +31,17 @@ void Player::open(Song *song)
     this->setCurrentSong(song);
     this->player->setSource(song->source());
     this->play();
+}
+
+void Player::saveVolume()
+{
+    qDebug() << "[Player] Saving volume:" << this->audioOutput->volume();
+    this->settings->setValue("volume", this->audioOutput->volume());
+}
+
+QAudioOutput *Player::getAudioOutput() const
+{
+    return audioOutput;
 }
 
 void Player::play()
@@ -80,4 +105,17 @@ void Player::setCurrentSong(Song *newCurrentSong)
         return;
     m_currentSong = newCurrentSong;
     emit currentSongChanged();
+}
+
+bool Player::loop() const
+{
+    return m_loop;
+}
+
+void Player::setLoop(bool newLoop)
+{
+    if (m_loop == newLoop)
+        return;
+    m_loop = newLoop;
+    emit loopChanged();
 }

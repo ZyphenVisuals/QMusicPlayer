@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QMediaPlayer>
 #include <QObject>
+#include <QSettings>
 #include <QUrl>
 
 #include "song.h"
@@ -16,8 +17,10 @@ class Player : public QObject
         Song *currentSong READ currentSong WRITE setCurrentSong NOTIFY currentSongChanged FINAL)
     Q_PROPERTY(qint64 timecode READ timecode WRITE setTimecode NOTIFY timecodeChanged FINAL)
     Q_PROPERTY(bool playing READ playing WRITE setPlaying NOTIFY playingChanged FINAL)
+    Q_PROPERTY(QAudioOutput *audioOutput READ getAudioOutput CONSTANT FINAL)
+    Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged FINAL)
 public:
-    explicit Player(QAudioOutput *output, QObject *parent = nullptr);
+    explicit Player(QObject *parent = nullptr);
 
     qint64 timecode() const;
     void setTimecode(qint64 newTimecode);
@@ -28,12 +31,19 @@ public:
     Song *currentSong() const;
     void setCurrentSong(Song *newCurrentSong);
 
+    QAudioOutput *getAudioOutput() const;
+
+    bool loop() const;
+    void setLoop(bool newLoop);
+
 signals:
     void timecodeChanged();
 
     void playingChanged();
 
     void currentSongChanged();
+
+    void loopChanged();
 
 public slots:
     void play();
@@ -42,6 +52,7 @@ public slots:
     void previous();
     void seek(qint64 timecode);
     void open(Song *song);
+    void saveVolume();
 
 private:
     // properties
@@ -51,6 +62,9 @@ private:
     // others
     QMediaPlayer *player;
     Song *m_currentSong = nullptr;
+    QAudioOutput *audioOutput;
+    QSettings *settings;
+    bool m_loop;
 };
 
 #endif // PLAYER_H

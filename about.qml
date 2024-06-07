@@ -40,8 +40,19 @@ ApplicationWindow {
             Layout.alignment: Qt.AlignHCenter
         }
 
+        Item {
+            Layout.preferredHeight: 20
+        }
+
         Label {
-            text: "Built with passion by *Team CEX* and magic from *The Qt Company*."
+            text: "Built with passion, caffeine and sleep deprivation by *Team CEX*,"
+            textFormat: "MarkdownText"
+            font.pixelSize: 16
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        Label{
+            text: "and magic from *The Qt Company*.";
             textFormat: "MarkdownText"
             font.pixelSize: 16
             Layout.alignment: Qt.AlignHCenter

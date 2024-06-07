@@ -195,7 +195,6 @@ ApplicationWindow {
                                 Player.open(model.song)
                                 songlist.currentIndex = index
                             }
-                            console.log(model.cover)
                         }
                     }
 
@@ -330,10 +329,175 @@ ApplicationWindow {
             Layout.fillWidth: false
             Layout.fillHeight: true
             Layout.preferredWidth: parent.width/5 * 2
-            Layout.alignment: Qt.AlignTop
+            Layout.preferredHeight: parent.height
+
+            visible: Player.currentSong !== null
+
+            Item {
+                Layout.fillHeight: true
+            }
+
+            Rectangle{
+                color:"transparent"
+                Layout.preferredHeight: Math.min(parent.width*0.8, parent.height * 0.6)
+                Layout.preferredWidth: Math.min(parent.width*0.8, parent.height * 0.6)
+                Layout.alignment: Qt.AlignCenter
+                id: songImageContainer
+                Image {
+                    id: songImage
+                    source: Player.currentSong.coverUrl
+                    anchors.fill: parent
+                }
+            }
+            Rectangle{
+                color:"transparent"
+                Layout.preferredWidth: songImageContainer.width
+                Layout.preferredHeight: 35
+                Layout.alignment: Qt.AlignCenter
+                clip: true
+                Label{
+                    text: Player.currentSong.title
+                    verticalAlignment: Text.AlignVCenter
+                    font.pointSize: 18
+                    width: songImageContainer.width
+                    elide: Text.ElideRight
+                }
+            }
+            Rectangle{
+                color:"transparent"
+                Layout.preferredWidth: songImageContainer.width
+                Layout.preferredHeight: 20
+                Layout.alignment: Qt.AlignCenter
+                clip: true
+                Label{
+                    text: Player.currentSong.artist + " - " + Player.currentSong.album
+                    verticalAlignment: Text.AlignVCenter
+                    font.pointSize: 10
+                    width: songImageContainer.width
+                    elide: Text.ElideRight
+                }
+            }
+            ProgressBar{
+                Layout.preferredWidth: songImageContainer.width
+                Layout.preferredHeight: 40
+                Layout.alignment: Qt.AlignCenter
+                value: Player.timecode
+                from: 0
+                to: Player.currentSong.duration
+            }
+            RowLayout{
+                spacing: 0
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: songImageContainer.width
+                Layout.preferredHeight: 50
 
 
+                RoundButton {
+                    Layout.preferredHeight: parent.height
+                    Layout.preferredWidth: parent.height
+                    Layout.alignment: Qt.AlignHCenter
+                    radius: width/2
+                    icon.source: "qrc:/static/repeat.svg"
+                    background: Item{}
+                    Universal.foreground: Player.loop ? Universal.accent : "white"
 
+                    onClicked: {
+                        Player.loop = !Player.loop
+                    }
+                }
+
+                RoundButton {
+                    Layout.preferredHeight: parent.height
+                    Layout.preferredWidth: parent.height
+                    Layout.alignment: Qt.AlignHCenter
+                    radius: width/2
+                    icon.source: "qrc:/static/play-skip-back.svg"
+                    background: Item{}
+                }
+                RoundButton {
+                    Layout.preferredHeight: parent.height
+                    Layout.preferredWidth: parent.height
+                    Layout.alignment: Qt.AlignHCenter
+                    radius: width/2
+                    icon.source: Player.playing ? "qrc:/static/pause.svg" : "qrc:/static/play.svg"
+                    onClicked: {
+                        if(Player.playing) {
+                            Player.pause()
+                        } else {
+                            Player.play()
+                        }
+                    }
+                }
+                RoundButton {
+                    Layout.preferredHeight: parent.height
+                    Layout.preferredWidth: parent.height
+                    Layout.alignment: Qt.AlignHCenter
+                    radius: width/2
+                    icon.source: "qrc:/static/play-skip-forward.svg"
+                    background: Item{}
+                }
+
+                Item{
+                    Layout.preferredHeight: parent.height
+                    Layout.preferredWidth: parent.height
+                    Layout.alignment: Qt.AlignHCenter
+
+                    RoundButton {
+                        id: volumeButton
+                        anchors.fill: parent
+                        radius: width/2
+                        icon.source: "qrc:/static/volume-high.svg"
+                        background: Item{}
+
+                    }
+
+                    Rectangle {
+                        id: volumeSlider
+                        height: 100
+                        width: 35
+                        anchors.bottom: parent.top
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        visible: volumeButton.hovered || volume.hovered || volume.pressed
+                        color: "#1f1f1f"
+                        border.color: "white"
+                        border.width: 1
+                        radius: 5
+
+                        Slider {
+                            id: volume
+                            anchors.fill: parent
+                            orientation: Qt.Vertical
+                            from: 0
+                            to: 1
+                            value: Player.audioOutput.volume
+                            onMoved: {
+                                Player.audioOutput.volume = value
+                            }
+                            onPressedChanged: {
+                                if (!pressed) {
+                                    Player.saveVolume()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            Item {
+                Layout.fillHeight: true
+            }
+        }
+
+        Item {
+            visible: Player.currentSong === null
+            Layout.fillHeight: true
+            Layout.fillWidth: true
+
+            Label{
+                anchors.centerIn: parent
+                text: "No song selected"
+                font.pointSize: 24
+            }
         }
     }
 

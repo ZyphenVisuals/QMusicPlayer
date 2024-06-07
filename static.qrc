@@ -2,5 +2,15 @@
     <qresource prefix="/">
         <file>static/no_album_art.jpg</file>
         <file>static/QMP.png</file>
+        <file>static/play.svg</file>
+        <file>static/play-skip-back.svg</file>
+        <file>static/play-skip-forward.svg</file>
+        <file>static/repeat.svg</file>
+        <file>static/volume-high.svg</file>
+        <file>static/volume-low.svg</file>
+        <file>static/volume-medium.svg</file>
+        <file>static/volume-mute.svg</file>
+        <file>static/volume-off.svg</file>
+        <file>static/pause.svg</file>
     </qresource>
 </RCC>
