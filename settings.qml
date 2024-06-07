@@ -39,29 +39,32 @@ ApplicationWindow {
                 font.pixelSize: 16
             }
             ComboBox{
+                Component.onCompleted: currentIndex = indexOfValue(ThemeManager.accentColor)
+
                 model: ListModel{
                     ListElement{
                         name: "Cobalt (Default)"
-                        color: Universal.Cobalt
+                        value: Universal.Cobalt
                     }
                     ListElement{
                         name: "Emerald"
-                        color: Universal.Emerald
+                        value: Universal.Emerald
                     }
                     ListElement{
                         name: "Violet"
-                        color: Universal.Violet
+                        value: Universal.Violet
                     }
                     ListElement{
                         name: "Crimson"
-                        color: Universal.Crimson
+                        value: Universal.Crimson
                     }
                 }
 
                 textRole: "name"
+                valueRole: "value"
 
-                onCurrentIndexChanged: {
-                    ThemeManager.accentColor = model.get(currentIndex).color
+                onActivated: {
+                    ThemeManager.accentColor = model.get(currentIndex).value
                 }
             }
         }
