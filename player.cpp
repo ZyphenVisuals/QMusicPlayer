@@ -4,13 +4,15 @@
 #include <QDebug>
 #include <QSettings>
 
-Player::Player(QObject *parent)
+Player::Player(Playlist *playlist, QObject *parent)
     : QObject{parent}
 {
     this->player = new QMediaPlayer(this);
     this->setPlaying(false);
     this->audioOutput = new QAudioOutput(this);
     this->settings = new QSettings("Team CEX", "QMusicPlayer", this);
+    this->playlist = playlist;
+
     this->player->setAudioOutput(this->audioOutput);
     if (this->settings->contains("volume")) {
         qDebug() << "[Player] Loading volume:" << this->settings->value("volume").toFloat();
@@ -22,6 +24,16 @@ Player::Player(QObject *parent)
     connect(this->player, &QMediaPlayer::positionChanged, this, [=](qint64 position) {
         this->setTimecode(position);
     });
+
+    connect(this->player,
+            &QMediaPlayer::mediaStatusChanged,
+            this,
+            [=](QMediaPlayer::MediaStatus state) {
+                if (state == QMediaPlayer::EndOfMedia) {
+                    this->setPlaying(false);
+                    this->next();
+                }
+            });
 }
 
 void Player::open(Song *song)
@@ -62,9 +74,47 @@ void Player::pause()
     this->setPlaying(false);
 }
 
-void Player::next() {}
+void Player::next()
+{
+    if (this->currentSong() == nullptr)
+        return;
 
-void Player::previous() {}
+    if (this->loop()) {
+        this->player->setPosition(0);
+        this->play();
+        return;
+    }
+
+    Song *nextSong = this->playlist->next(this->currentSong());
+
+    if (nextSong != nullptr) {
+        this->open(nextSong);
+    }
+
+    this->player->setPosition(0);
+    this->pause();
+}
+
+void Player::previous()
+{
+    if (this->currentSong() == nullptr)
+        return;
+
+    if (this->loop() || this->timecode() > 10000) {
+        this->player->setPosition(0);
+        this->play();
+        return;
+    }
+
+    Song *previousSong = this->playlist->previous(this->currentSong());
+
+    if (previousSong != nullptr) {
+        this->open(previousSong);
+    }
+
+    this->player->setPosition(0);
+    this->play();
+}
 
 void Player::seek(qint64 timecode) {}
 
@@ -77,7 +127,13 @@ void Player::setTimecode(qint64 newTimecode)
 {
     if (m_timecode == newTimecode)
         return;
+
+    if (newTimecode - m_timecode > 1000 || m_timecode - newTimecode > 1000) {
+        this->player->setPosition(newTimecode);
+    }
+
     m_timecode = newTimecode;
+
     emit timecodeChanged();
 }
 

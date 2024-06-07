@@ -8,6 +8,7 @@
 #include <QSettings>
 #include <QUrl>
 
+#include "playlist.h"
 #include "song.h"
 
 class Player : public QObject
@@ -20,7 +21,7 @@ class Player : public QObject
     Q_PROPERTY(QAudioOutput *audioOutput READ getAudioOutput CONSTANT FINAL)
     Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged FINAL)
 public:
-    explicit Player(QObject *parent = nullptr);
+    explicit Player(Playlist *playlist, QObject *parent = nullptr);
 
     qint64 timecode() const;
     void setTimecode(qint64 newTimecode);
@@ -64,7 +65,8 @@ private:
     Song *m_currentSong = nullptr;
     QAudioOutput *audioOutput;
     QSettings *settings;
-    bool m_loop;
+    bool m_loop = false;
+    Playlist *playlist;
 };
 
 #endif // PLAYER_H

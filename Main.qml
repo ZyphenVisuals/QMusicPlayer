@@ -347,6 +347,7 @@ ApplicationWindow {
                     id: songImage
                     source: Player.currentSong.coverUrl
                     anchors.fill: parent
+                    fillMode: Image.PreserveAspectCrop
                 }
             }
             Rectangle{
@@ -377,13 +378,17 @@ ApplicationWindow {
                     elide: Text.ElideRight
                 }
             }
-            ProgressBar{
+            Slider {
                 Layout.preferredWidth: songImageContainer.width
                 Layout.preferredHeight: 40
                 Layout.alignment: Qt.AlignCenter
                 value: Player.timecode
                 from: 0
                 to: Player.currentSong.duration
+
+                onMoved: {
+                    Player.timecode = value
+                }
             }
             RowLayout{
                 spacing: 0
@@ -413,6 +418,10 @@ ApplicationWindow {
                     radius: width/2
                     icon.source: "qrc:/static/play-skip-back.svg"
                     background: Item{}
+
+                    onClicked: {
+                        Player.previous()
+                    }
                 }
                 RoundButton {
                     Layout.preferredHeight: parent.height
@@ -435,6 +444,10 @@ ApplicationWindow {
                     radius: width/2
                     icon.source: "qrc:/static/play-skip-forward.svg"
                     background: Item{}
+
+                    onClicked: {
+                        Player.next()
+                    }
                 }
 
                 Item{

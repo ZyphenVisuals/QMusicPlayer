@@ -23,6 +23,9 @@ public:
 
     int count() const;
 
+    Song *next(Song *currentSong);
+    Song *previous(Song *currentSong);
+
 public slots:
 
     void addSong(Song *song);

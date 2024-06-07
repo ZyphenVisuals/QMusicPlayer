@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     qDebug() << "Using settings file:" << settings.fileName();
 
     Playlist *playlist = new Playlist("Master", Playlist::PlayListType::Master, &app);
-    Player *player = new Player(&app);
+    Player *player = new Player(playlist, &app);
     FileManager *fileManager = new FileManager(&app);
 
     QObject::connect(fileManager, &FileManager::newFile, playlist, &Playlist::addSong);

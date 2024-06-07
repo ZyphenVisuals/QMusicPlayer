@@ -30,6 +30,32 @@ int Playlist::count() const
     return m_songs.size();
 }
 
+Song *Playlist::next(Song *currentSong)
+{
+    for (int i = 0; i < this->m_songs.size(); i++) {
+        if (this->m_songs.at(i) == currentSong) {
+            if (i + 1 < this->m_songs.size()) {
+                return this->m_songs.at(i + 1);
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+Song *Playlist::previous(Song *currentSong)
+{
+    for (int i = 0; i < this->m_songs.size(); i++) {
+        if (this->m_songs.at(i) == currentSong) {
+            if (i - 1 >= 0) {
+                return this->m_songs.at(i - 1);
+            }
+        }
+    }
+
+    return nullptr;
+}
+
 void Playlist::addSong(Song *song)
 {
     // check if song is already in playlist
