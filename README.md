@@ -20,7 +20,7 @@ The minimal installation needed to compile and run this project consists of:
   - Additional Libraries
     - Qt Multimedia
 - Developer and Designer Tools
-    - Qt Creator (Optional, but strongle recommended)
+    - Qt Creator (Optional, but strongly recommended)
     - CMake
     - Ninja
 
@@ -43,7 +43,7 @@ Since we provide no pre-built binaries, you will need to compile this program fr
 
 ### Importing folders
 
-Selecting folders to import is done within the settings, since these are remembered across restarts.
+Adding import folders is done within the settings window, as these are remembered across restarts.
 
 1. Go to Options>Settings
 2. In the "Folder paths" section, click on "Add folder"
@@ -52,7 +52,7 @@ Selecting folders to import is done within the settings, since these are remembe
 
 ### Organizing your media
 
-QMediaPlayer is able tu automatically group your music by artist or by album.
+QMediaPlayer is able to automatically group your music by artist or by album.
 
 1. Change the grouping mode using the View menu
 2. Magic!
