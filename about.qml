@@ -17,8 +17,11 @@ ApplicationWindow {
     id: root
 
     ColumnLayout {
-        anchors.centerIn: parent
-        Layout.alignment: Qt.AlignTop
+        anchors.fill: parent
+
+        Item {
+            Layout.fillHeight: true
+        }
 
         Image {
             source: "qrc:/static/QMP.png"
@@ -52,10 +55,25 @@ ApplicationWindow {
         }
 
         Label{
-            text: "and magic from *The Qt Company*.";
+            text: "as well as some magic from *The Qt Company*.";
             textFormat: "MarkdownText"
             font.pixelSize: 16
             Layout.alignment: Qt.AlignHCenter
+        }
+
+        Item {
+            Layout.fillHeight: true
+        }
+
+        Label {
+            text: "Icons from *Ionicons* by *Ionic*. Default album art from *Unsplash* by *Andrea Cipriani*."
+            textFormat: "MarkdownText"
+            font.pixelSize: 10
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        Item {
+            Layout.preferredHeight: 5
         }
 
     }
