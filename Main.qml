@@ -57,6 +57,18 @@ ApplicationWindow {
                     Player.pause()
                 }
             }
+            Action {
+                text: qsTr("Next")
+                onTriggered: {
+                    Player.next()
+                }
+            }
+            Action {
+                text: qsTr("Previous")
+                onTriggered: {
+                    Player.previous()
+                }
+            }
         }
 
         Menu {

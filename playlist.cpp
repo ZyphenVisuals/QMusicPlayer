@@ -14,8 +14,6 @@ void Playlist::generateSortedLists()
     std::stable_sort(this->m_songs_artist.begin(),
                      this->m_songs_artist.end(),
                      [](Song *a, Song *b) { return a->artist() < b->artist(); });
-
-    qDebug() << "[Playlist] Sorted songs by album and artist";
 }
 
 Playlist::Playlist(QString title, PlayListType type, QObject *parent) : QObject{parent}
