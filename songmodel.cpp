@@ -31,21 +31,27 @@ QVariant SongModel::data(const QModelIndex &index, int role) const
     Song *song = m_playlist->songs().at(index.row());
 
     if (this->m_orderBy == "album") {
+        /*
         QVector<Song *> sortedSongs = m_playlist->songs();
         std::stable_sort(sortedSongs.begin(), sortedSongs.end(), [](Song *a, Song *b) {
             return a->album() < b->album();
         });
         song = sortedSongs.at(index.row());
         sortedSongs.clear();
+        */
+        song = m_playlist->songsByAlbum().at(index.row());
     }
 
     if (this->m_orderBy == "artist") {
+        /*
         QVector<Song *> sortedSongs = m_playlist->songs();
         std::stable_sort(sortedSongs.begin(), sortedSongs.end(), [](Song *a, Song *b) {
             return a->artist() < b->artist();
         });
         song = sortedSongs.at(index.row());
         sortedSongs.clear();
+        */
+        song = m_playlist->songsByArtist().at(index.row());
     }
 
     switch (role) {

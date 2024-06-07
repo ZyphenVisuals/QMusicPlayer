@@ -11,6 +11,7 @@ import com.teamcex.FileManager
 import com.teamcex.Player
 import com.teamcex.SongModel
 import com.teamcex.Playlist
+import com.teamcex.ThemeManager
 
 ApplicationWindow {
     width: 1280
@@ -20,6 +21,7 @@ ApplicationWindow {
     visible: true
     title: qsTr("QMusicPlayer")
     Universal.theme: Universal.Dark
+    Universal.accent: ThemeManager.accentColor === -1 ? Universal.Cobalt : ThemeManager.accentColor
     id: root
 
     property string filterType: ""
@@ -63,18 +65,21 @@ ApplicationWindow {
                 text: qsTr("All songs")
                 onTriggered: {
                     filterType = ""
+                    Player.order = "all"
                 }
             }
             Action {
                 text: qsTr("Albums")
                 onTriggered: {
                     filterType = "album"
+                    Player.order = "album"
                 }
             }
             Action {
                 text: qsTr("Artists")
                 onTriggered: {
                     filterType = "artist"
+                    Player.order = "artist"
                 }
             }
         }
@@ -180,7 +185,7 @@ ApplicationWindow {
                     height: 100
                     x: 20
                     color: "#1f1f1f"
-                    border.color: "white"
+                    border.color: (Player.currentSong === null || model.song.source !== Player.currentSong.source) ? "white" : Universal.accent
                     border.width: 2
                     radius: 10
 

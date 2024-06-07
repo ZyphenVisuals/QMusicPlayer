@@ -20,6 +20,7 @@ class Player : public QObject
     Q_PROPERTY(bool playing READ playing WRITE setPlaying NOTIFY playingChanged FINAL)
     Q_PROPERTY(QAudioOutput *audioOutput READ getAudioOutput CONSTANT FINAL)
     Q_PROPERTY(bool loop READ loop WRITE setLoop NOTIFY loopChanged FINAL)
+    Q_PROPERTY(QString order READ order WRITE setOrder NOTIFY orderChanged FINAL)
 public:
     explicit Player(Playlist *playlist, QObject *parent = nullptr);
 
@@ -37,6 +38,9 @@ public:
     bool loop() const;
     void setLoop(bool newLoop);
 
+    QString order() const;
+    void setOrder(const QString &newOrder);
+
 signals:
     void timecodeChanged();
 
@@ -45,6 +49,8 @@ signals:
     void currentSongChanged();
 
     void loopChanged();
+
+    void orderChanged();
 
 public slots:
     void play();
@@ -67,6 +73,7 @@ private:
     QSettings *settings;
     bool m_loop = false;
     Playlist *playlist;
+    QString m_order;
 };
 
 #endif // PLAYER_H

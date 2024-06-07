@@ -2,17 +2,42 @@
 
 #include "playlist.h"
 
+void Playlist::generateSortedLists()
+{
+    this->m_songs_album = this->m_songs;
+    this->m_songs_artist = this->m_songs;
+
+    std::stable_sort(this->m_songs_album.begin(), this->m_songs_album.end(), [](Song *a, Song *b) {
+        return a->album() < b->album();
+    });
+
+    std::stable_sort(this->m_songs_artist.begin(),
+                     this->m_songs_artist.end(),
+                     [](Song *a, Song *b) { return a->artist() < b->artist(); });
+
+    qDebug() << "[Playlist] Sorted songs by album and artist";
+}
+
 Playlist::Playlist(QString title, PlayListType type, QObject *parent) : QObject{parent}
 {
     this->m_title = title;
     this->m_type = type;
 
-    qDebug() << "[Playlist] Created playlist:" << this->title();
 }
 
 QVector<Song *> Playlist::songs() const
 {
     return this->m_songs;
+}
+
+QVector<Song *> Playlist::songsByAlbum() const
+{
+    return this->m_songs_album;
+}
+
+QVector<Song *> Playlist::songsByArtist() const
+{
+    return this->m_songs_artist;
 }
 
 QString Playlist::title() const
@@ -30,12 +55,32 @@ int Playlist::count() const
     return m_songs.size();
 }
 
-Song *Playlist::next(Song *currentSong)
+Song *Playlist::next(Song *currentSong, QString orderBy)
 {
-    for (int i = 0; i < this->m_songs.size(); i++) {
-        if (this->m_songs.at(i) == currentSong) {
-            if (i + 1 < this->m_songs.size()) {
-                return this->m_songs.at(i + 1);
+    if (orderBy == "album") {
+        for (int i = 0; i < this->m_songs_album.size(); i++) {
+            if (this->m_songs_album.at(i) == currentSong) {
+                if (i + 1 < this->m_songs_album.size()
+                    && this->m_songs_album.at(i + 1)->album() == currentSong->album()) {
+                    return this->m_songs_album.at(i + 1);
+                }
+            }
+        }
+    } else if (orderBy == "artist") {
+        for (int i = 0; i < this->m_songs_artist.size(); i++) {
+            if (this->m_songs_artist.at(i) == currentSong) {
+                if (i + 1 < this->m_songs_artist.size()
+                    && this->m_songs_artist.at(i + 1)->artist() == currentSong->artist()) {
+                    return this->m_songs_artist.at(i + 1);
+                }
+            }
+        }
+    } else {
+        for (int i = 0; i < this->m_songs.size(); i++) {
+            if (this->m_songs.at(i) == currentSong) {
+                if (i + 1 < this->m_songs.size()) {
+                    return this->m_songs.at(i + 1);
+                }
             }
         }
     }
@@ -43,12 +88,31 @@ Song *Playlist::next(Song *currentSong)
     return nullptr;
 }
 
-Song *Playlist::previous(Song *currentSong)
+Song *Playlist::previous(Song *currentSong, QString orderBy)
 {
-    for (int i = 0; i < this->m_songs.size(); i++) {
-        if (this->m_songs.at(i) == currentSong) {
-            if (i - 1 >= 0) {
-                return this->m_songs.at(i - 1);
+    if (orderBy == "album") {
+        for (int i = 0; i < this->m_songs_album.size(); i++) {
+            if (this->m_songs_album.at(i) == currentSong) {
+                if (i - 1 >= 0 && this->m_songs_album.at(i - 1)->album() == currentSong->album()) {
+                    return this->m_songs_album.at(i - 1);
+                }
+            }
+        }
+    } else if (orderBy == "artist") {
+        for (int i = 0; i < this->m_songs_artist.size(); i++) {
+            if (this->m_songs_artist.at(i) == currentSong) {
+                if (i - 1 >= 0
+                    && this->m_songs_artist.at(i - 1)->artist() == currentSong->artist()) {
+                    return this->m_songs_artist.at(i - 1);
+                }
+            }
+        }
+    } else {
+        for (int i = 0; i < this->m_songs.size(); i++) {
+            if (this->m_songs.at(i) == currentSong) {
+                if (i - 1 >= 0) {
+                    return this->m_songs.at(i - 1);
+                }
             }
         }
     }
@@ -82,4 +146,5 @@ void Playlist::songDataLoaded(QUrl source)
             break;
         }
     }
+    this->generateSortedLists();
 }

@@ -12,6 +12,7 @@
 #include "player.h"
 #include "playlist.h"
 #include "songmodel.h"
+#include "thememanager.h"
 
 int main(int argc, char *argv[])
 {
@@ -32,6 +33,7 @@ int main(int argc, char *argv[])
     Playlist *playlist = new Playlist("Master", Playlist::PlayListType::Master, &app);
     Player *player = new Player(playlist, &app);
     FileManager *fileManager = new FileManager(&app);
+    ThemeManager *themeManager = new ThemeManager(&app);
 
     QObject::connect(fileManager, &FileManager::newFile, playlist, &Playlist::addSong);
     QObject::connect(fileManager, &FileManager::playSong, player, &Player::open);
@@ -41,6 +43,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonInstance("com.teamcex.FileManager", 1, 0, "FileManager", fileManager);
     qmlRegisterSingletonInstance("com.teamcex.Player", 1, 0, "Player", player);
     qmlRegisterSingletonInstance("com.teamcex.Playlist", 1, 0, "Playlist", playlist);
+    qmlRegisterSingletonInstance("com.teamcex.ThemeManager", 1, 0, "ThemeManager", themeManager);
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/PPMusicProject/Main.qml"));

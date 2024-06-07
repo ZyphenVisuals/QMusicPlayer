@@ -16,6 +16,8 @@ public:
     explicit Playlist(QString title, PlayListType type, QObject *parent = nullptr);
 
     QVector<Song *> songs() const;
+    QVector<Song *> songsByAlbum() const;
+    QVector<Song *> songsByArtist() const;
 
     QString title() const;
 
@@ -23,8 +25,8 @@ public:
 
     int count() const;
 
-    Song *next(Song *currentSong);
-    Song *previous(Song *currentSong);
+    Song *next(Song *currentSong, QString orderBy);
+    Song *previous(Song *currentSong, QString orderBy);
 
 public slots:
 
@@ -39,8 +41,11 @@ signals:
 
 private:
     QVector<Song *> m_songs;
+    QVector<Song *> m_songs_album;
+    QVector<Song *> m_songs_artist;
     QString m_title;
     PlayListType m_type;
+    void generateSortedLists();
 };
 
 #endif // PLAYLIST_H

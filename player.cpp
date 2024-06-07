@@ -12,6 +12,7 @@ Player::Player(Playlist *playlist, QObject *parent)
     this->audioOutput = new QAudioOutput(this);
     this->settings = new QSettings("Team CEX", "QMusicPlayer", this);
     this->playlist = playlist;
+    this->m_order = "all";
 
     this->player->setAudioOutput(this->audioOutput);
     if (this->settings->contains("volume")) {
@@ -85,10 +86,11 @@ void Player::next()
         return;
     }
 
-    Song *nextSong = this->playlist->next(this->currentSong());
+    Song *nextSong = this->playlist->next(this->currentSong(), this->m_order);
 
     if (nextSong != nullptr) {
         this->open(nextSong);
+        return;
     }
 
     this->player->setPosition(0);
@@ -106,7 +108,7 @@ void Player::previous()
         return;
     }
 
-    Song *previousSong = this->playlist->previous(this->currentSong());
+    Song *previousSong = this->playlist->previous(this->currentSong(), this->m_order);
 
     if (previousSong != nullptr) {
         this->open(previousSong);
@@ -174,4 +176,17 @@ void Player::setLoop(bool newLoop)
         return;
     m_loop = newLoop;
     emit loopChanged();
+}
+
+QString Player::order() const
+{
+    return m_order;
+}
+
+void Player::setOrder(const QString &newOrder)
+{
+    if (m_order == newOrder)
+        return;
+    m_order = newOrder;
+    emit orderChanged();
 }

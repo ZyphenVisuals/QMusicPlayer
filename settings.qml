@@ -7,6 +7,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 
 import com.teamcex.FileManager
+import com.teamcex.ThemeManager
 
 ApplicationWindow {
     visible: true
@@ -25,7 +26,7 @@ ApplicationWindow {
         id: settingsLayout
 
         Text {
-            text: qsTr("Audio settings")
+            text: qsTr("Personalization")
             color: "white"
             font.pixelSize: 32
             font.bold: true
@@ -33,12 +34,35 @@ ApplicationWindow {
 
         RowLayout{
             Text {
-                text: qsTr("Output device")
+                text: qsTr("Accent color")
                 color: "white"
                 font.pixelSize: 16
             }
             ComboBox{
-                model: ["Default", "Custom"]
+                model: ListModel{
+                    ListElement{
+                        name: "Cobalt (Default)"
+                        color: Universal.Cobalt
+                    }
+                    ListElement{
+                        name: "Emerald"
+                        color: Universal.Emerald
+                    }
+                    ListElement{
+                        name: "Violet"
+                        color: Universal.Violet
+                    }
+                    ListElement{
+                        name: "Crimson"
+                        color: Universal.Crimson
+                    }
+                }
+
+                textRole: "name"
+
+                onCurrentIndexChanged: {
+                    ThemeManager.accentColor = model.get(currentIndex).color
+                }
             }
         }
 
